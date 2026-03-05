@@ -1,8 +1,11 @@
 # 1. Importaciones
-from fastapi import FastAPI, status, HTTPException
+from fastapi import FastAPI, status, HTTPException,Depends
 import asyncio
 from typing import Optional
 from pydantic import BaseModel, Field
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+import secrets
+
 
 # 2. Inicialización de la APP
 app = FastAPI(
@@ -18,6 +21,8 @@ usuarios = [
     {"id": 3, "nombre": "Carlos", "edad": 30},
 ]
 
+
+
 # 4. Modelo de Validación Pydantic 
 class crear_usuario(BaseModel):
     
@@ -26,6 +31,22 @@ class crear_usuario(BaseModel):
     nombre: str = Field(..., min_length=3, max_length=50, example="Juanita")
     
     edad: int = Field(..., ge=1, le=123, description="Edad válida entre 1 y 123")
+
+
+#seguridad http basic
+
+security = HTTPBasic()
+def verificar_peticion(credenciales: HTTPBasicCredentials = Depends(security)):
+    userAuth = secrets.compare_digest(credenciales.username, "jesusgonzalez")
+    passAuth = secrets.compare_digest(credenciales.password, "123456")
+    
+    if not (userAuth and passAuth):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Credenciales noa autorizadas",
+        )
+    return credenciales.username
+
 
 # 5. Endpoints de Inicio
 @app.get("/", tags=['Inicio'])
@@ -71,13 +92,16 @@ async def crear_nuevo_usuario(usuario: crear_usuario):
     }
 
 # 8. Endpoint DELETE
-@app.delete("/v1/usuario/{id}", tags=['CRUD HTTP'])
-async def eliminar_usuario(id: int):
-    for index, usr in enumerate(usuarios):
-        if usr["id"] == id:
-            usuario_eliminado = usuarios.pop(index)
-            return {
-                "mensaje": "Usuario eliminado correctamente",
-                "usuario": usuario_eliminado
-            }
-    raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+@app.delete("/v1/usuario/{id}", tags=['CRUD HTTP'], status_code=status.HTTP_200_OK)
+async def eliminar_usuario(id: int, username: str = Depends(verificar_peticion)):
+    # Buscamos el objeto directamente
+    usuario = next((u for u in usuarios if u["id"] == id), None)
+    
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+        
+    usuarios.remove(usuario)
+    return {"mensaje": f"Usuario eliminado por {username}"}
+
+
