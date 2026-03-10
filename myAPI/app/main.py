@@ -95,7 +95,7 @@ async def crear_nuevo_usuario(usuario: crear_usuario):
 
 @app.delete("/v1/usuario/{id}", tags=['CRUD HTTP'], status_code=status.HTTP_200_OK)
 async def eliminar_usuario(id: int, username: str = Depends(verificar_peticion)):
-    # Buscamos el objeto directamente
+    
     usuario = next((u for u in usuarios if u["id"] == id), None)
     
     if not usuario:
