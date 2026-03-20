@@ -1,3 +1,3 @@
 fastapi
-uvicorn[standar]
-pydantic
+uvicorn[standard]
+pydantic>=2.0.0

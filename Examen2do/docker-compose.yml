@@ -1,10 +1,14 @@
-version: "3.9"
-
 services:
   myapi:
     build: .
-    container_name: server_FastAPI2
+    container_name: server_examen
     ports:
-      - "8000:8000"
+      - "5000:8000"
     volumes:
       - .:/app
+
+  redis-db:
+    image: redis:alpine
+    container_name: redis_examen
+    ports:
+      - "6379:6379"
