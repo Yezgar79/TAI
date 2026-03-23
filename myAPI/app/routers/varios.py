@@ -16,8 +16,6 @@ routerV = APIRouter(
 async def holaMundo():
     return {"message": "Hola Mundo FASTAPI"}
 
-
-
 @routerV.get("/v1/promedio", tags=['calificaciones'])
 async def promedio():
     await asyncio.sleep(5)#para que el codigo continue mientras espera lo demás
@@ -26,8 +24,6 @@ async def promedio():
         "estatus": "200"
         }
 
-
-
 @routerV.get("/v1/usuario/{id}", tags=['parametros'])
 async def consultaUno(id:int):
     await asyncio.sleep(3)
@@ -35,7 +31,6 @@ async def consultaUno(id:int):
         "resultado": "usuario encontrado",
         "estatus": "200"
         }
-
 
 @routerV.get("/v1/parametro0/", tags=['parameto opcional'])
 async def consulta0p(id:Optional[int]=None):

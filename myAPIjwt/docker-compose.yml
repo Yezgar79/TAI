@@ -1,0 +1,8 @@
+services:
+  myapi_jwt: # Nombre del servicio diferente
+    build: .
+    container_name: server_FastAPI_JWT  # NOMBRE NICO para que no choque con el anterior
+    ports: 
+      - "8080:8000" 
+    volumes:
+      - ./app:/app/app

@@ -15,7 +15,6 @@ async def consultaT():
         "total":len(usuarios),
         "data": usuarios
     }
-
 #post
 @routerU.post("/", status_code=status.HTTP_201_CREATED)
 async def crea_usuario(usuario:crear_usuario):
@@ -30,8 +29,6 @@ async def crea_usuario(usuario:crear_usuario):
         "mensaje": "usuario creado exitosamente",
         "usuario": usuario
     }
-            
-
 #put
 @routerU.put("/{id}", status_code=status.HTTP_200_OK)
 async def actualiza_usuario(id:int, usuario:dict):
